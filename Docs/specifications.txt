@@ -1,0 +1,222 @@
+openapi: 3.0.3
+info:
+  title: ToDoList - OpenAPI 3.0
+  description: |-
+    Test for the ToDo List API
+  version: 1.0.11
+servers:
+  - url: http://127.0.0.1:5000
+tags:
+  - name: todo-list with param
+    description: ToDo Lists with parameters
+  - name: todo-list
+    description: ToDo Lists
+    
+paths:
+  /todo-list/{list_id}:
+    get:
+      tags:
+        - todo-list with param
+      summary: Get entries by from a list
+      description: Returns all the entries from a list
+      operationId: getListbyId
+      parameters:
+        - name: list_id
+          in: path
+          description: ID of list to return
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToDoList'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ToDoList'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: List not found
+          
+    delete:
+      tags:
+        - todo-list with param
+      summary: Deletes a list
+      description: delete a list
+      operationId: deleteList
+      parameters:
+        - name: list_id
+          in: path
+          description: List id to delete
+          required: true
+          schema:
+            type: string
+      responses:
+        '400':
+          description: Invalid id value
+            
+    patch:
+      tags:
+        - todo-list with param
+      summary: Updates a list with form data
+      description: ''
+      operationId: updateListWithForm
+      parameters:
+        - name: list_id
+          in: path
+          description: ID of the list to be updated
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: ''
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchRequest'
+      responses:
+        '405':
+          description: Invalid input
+        '404':
+          description: not found
+
+  /todo-list:
+    get:
+      tags:
+        - todo-list
+      summary: Gets all ToDo Lists
+      description: ''
+      operationId: getAllLists
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToDoList'
+    post:
+      tags:
+      - todo-list
+      summary: Adds a new ToDo List
+      description: ''
+      operationId: addNewList
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ToDoList'
+      responses:
+        '200':
+          description: successful operation
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToDoList'
+
+  /todo-list/{list_id}/entry:
+    post:
+      tags:
+        - new entry
+      summary: Add a new entry to a ToDo List
+      description: ''
+      operationId: addToList
+      parameters:
+        - name: list_id
+          in: path
+          description: ID of the list where a new entry should be added
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: ''
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Entry'
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Entry'
+                
+                
+  /entry/{entry_id}:
+    patch:
+      tags:
+        - update entries
+      summary: Update an entry
+      description: ''
+      operationId: updateEntry
+      parameters:
+        - name: entry_id
+          in: path
+          description: Id of the entry that should be edited
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Entry'
+    
+    delete:
+      tags:
+        - update entries
+      summary: Delete an entry
+      description: ''
+      operationId: deleteEntry
+      parameters:
+        - name: entry_id
+          in: path
+          description: Id of the entry that should be deleted
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: deleted
+components:
+  schemas:
+    PatchRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - name
+      properties:
+        id:
+          description: A UUID for each list
+          type: string
+        name:
+          description: The name of the list
+          type: string
+    ToDoList:
+      type: object
+      properties:
+        list_id:
+          type: string
+        name:
+          type: string
+    Entry:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+          example: name
+        description:
+          type: string
+        list:
+          type: string
