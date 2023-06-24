@@ -1,6 +1,6 @@
 
 import uuid 
-from flask import Flask, request, jsonify, abort
+from flask import Flask, request, jsonify, abort, render_template
 
 
 # initialize Flask server
@@ -26,6 +26,11 @@ def apply_cors_header(response):
     response.headers["Access-Control-Allow-Methods"] = "GET,POST,DELETE,PATCH"
     response.headers["Access-Control-Allow-Headers"] = "Content-Type"
     return response
+
+@app.route("/")
+def main_page():
+    return "<p>Hallo</p>"
+
 
 # endpoints for getting, deleting and changing the name of todo lists
 @app.route("/todo-list/<list_id>", methods=["GET", "DELETE", "PATCH"])
